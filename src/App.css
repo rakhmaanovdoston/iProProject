@@ -1,0 +1,22 @@
+body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 20px;
+}
+
+.onlyList {
+    display: flex;
+    flex-direction: column;
+}
+
+.list2 {
+    padding-top: -20px;
+}
