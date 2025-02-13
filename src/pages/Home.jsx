@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar"; // Navbar komponentini import qilish
-import ProductCard from "../components/ProductCard"; // ProductCard komponenti
+import Navbar from "../components/Navbar";
+import ProductCard from "../components/ProductCard";
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");  // searchQuery va setSearchQuery holatini yaratish
-  const [categories, setCategories] = useState([]); // Kategoriyalar uchun state
-  const [products, setProducts] = useState([]); // Mahsulotlar uchun state
-  const [loading, setLoading] = useState(true); // Yuklanayotgan holat
-  const [selectedCategory, setSelectedCategory] = useState(null); // Tanlangan kategoriya
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false); // Kategoriyalar menyusining ochilganligi holati
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
-  // Kategoriyalarni fetch qilish
   useEffect(() => {
     const getCategories = async () => {
       try {
         const response = await fetch("https://fakestoreapi.com/products/categories");
         const data = await response.json();
-        setCategories(data); // Kategoriyalarni saqlash
+        setCategories(data);
       } catch (error) {
         console.error("Kategoriyalarni olishda xatolik:", error);
       }
@@ -30,14 +29,14 @@ export default function Home() {
     const getProducts = async () => {
       setLoading(true);
       try {
-        let url = "https://fakestoreapi.com/products"; // Mahsulotlarni olish uchun URL
+        let url = "https://fakestoreapi.com/products";
         if (selectedCategory && selectedCategory !== "all") {
           // Kategoriya bo'yicha filtr qilish
           url = `https://fakestoreapi.com/products/category/${selectedCategory}`;
         }
         const response = await fetch(url);
         const data = await response.json();
-        setProducts(data); // Mahsulotlarni saqlash
+        setProducts(data);
       } catch (error) {
         console.error("Mahsulotlarni olishda xatolik:", error);
       } finally {
@@ -46,25 +45,22 @@ export default function Home() {
     };
 
     getProducts();
-  }, [selectedCategory]); // Kategoriya o'zgarganda mahsulotlarni qayta olish
+  }, [selectedCategory]);
 
-  // Mahsulotlarni qidiruvga moslashtirish
   const filteredProducts = searchQuery.trim() === "" 
-    ? products  // Agar qidiruv bo'sh bo'lsa, barcha mahsulotlarni ko'rsatish
+    ? products
     : products.filter(product =>
         product.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
   return (
     <div className="bg-[azure] min-h-screen px-4 sm:px-6 lg:px-8 pt-[20px]">
-      <Navbar setSearchQuery={setSearchQuery} /> {/* setSearchQuery ni Navbar ga uzatish */}
+      <Navbar setSearchQuery={setSearchQuery} />
       
       <div className="flex flex-col sm:flex-row gap-6">
-        {/* Kategoriyalarni render qilish */}
         <div className="w-full sm:w-1/4">
           <h2 className="text-xl font-bold mb-4">Kategoriyalar</h2>
           
-          {/* Katalog tugmasi */}
           <button 
             className="sm:hidden w-full bg-blue-500 text-white p-2 rounded mb-4"
             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
@@ -72,12 +68,11 @@ export default function Home() {
             {isCategoryOpen ? "Kategoriyalarni Yopish" : "Kategoriyalarni Ko'rsatish"}
           </button>
 
-          {/* Kategoriyalar ro'yxati */}
           <ul className={`${isCategoryOpen ? "block" : "hidden"} sm:block space-y-2`}>
             <li
               key="all"
               className="cursor-pointer hover:bg-gray-200 p-2 rounded"
-              onClick={() => setSelectedCategory("all")} // Barcha mahsulotlar
+              onClick={() => setSelectedCategory("all")}
             >
               <span>All</span>
             </li>
@@ -85,23 +80,21 @@ export default function Home() {
               <li
                 key={category}
                 className="cursor-pointer hover:bg-gray-200 p-2 rounded"
-                onClick={() => setSelectedCategory(category)} // Kategoriya tanlanganda
+                onClick={() => setSelectedCategory(category)}
               >
-                {/* Kategoriyaning birinchi harfini katta qilish */}
                 <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Mahsulotlarni render qilish */}
         <div className="w-full sm:w-3/4">
           {loading ? (
             <p className="text-center text-lg">Yuklanmoqda...</p>
           ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} /> // ProductCard komponentini chaqirish
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (
